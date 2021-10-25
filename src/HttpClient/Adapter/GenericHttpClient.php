@@ -66,7 +66,7 @@ class GenericHttpClient extends HttpClient
 
     public function post(string $url, array $body = []): void
     {
-        $this->client->getHttpClient()->post($url, [], $body);
+        $this->client->getHttpClient()->post($url, [], $this->createBody($body));
     }
 
     public function postAuthentication(string $url, string $signature, array $body): array
@@ -76,17 +76,17 @@ class GenericHttpClient extends HttpClient
 
     public function put(string $url, array $body): void
     {
-        $this->client->getHttpClient()->put($url, [], $body);
+        $this->client->getHttpClient()->put($url, [], $this->createBody($body));
     }
 
     public function patch(string $url, array $body): void
     {
-        $this->client->getHttpClient()->patch($url, [], $body);
+        $this->client->getHttpClient()->patch($url, [], $this->createBody($body));
     }
 
     public function delete(string $url, array $body = []): void
     {
-        $this->client->getHttpClient()->delete($url, [], $body);
+        $this->client->getHttpClient()->delete($url, [], $this->createBody($body));
     }
 
     /**
@@ -108,5 +108,15 @@ class GenericHttpClient extends HttpClient
         }
 
         return $body;
+    }
+
+    /**
+     * @param array $data
+     * @return string
+     * @throws \JsonException
+     */
+    private function createBody(array $data): string
+    {
+        return json_encode($data, JSON_THROW_ON_ERROR);
     }
 }
