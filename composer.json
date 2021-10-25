@@ -1,0 +1,31 @@
+{
+    "name": "transip/transip-api-symfony",
+    "description": "TransIP API client integration for Symfony",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Transip\\Bundle\\RestApi\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sem Schilder",
+            "email": "sem.schilder@team.blue"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "transip/transip-api-php": "^6.9.2",
+        "psr/http-client":  "^1.0",
+        "nyholm/psr7": "^1.4",
+        "symfony/framework-bundle": "^5.3",
+        "php-http/httplug": "^1.1 || ^2.0",
+        "php-http/discovery": "^1.0",
+        "php-http/client-implementation": "^1.0",
+        "php-http/client-common": "^1.6 || ^2.0"
+    },
+    "require-dev": {
+        "symfony/http-client": "^5.3"
+    }
+}
