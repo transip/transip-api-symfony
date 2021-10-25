@@ -1,6 +1,6 @@
 {
     "name": "transip/transip-api-symfony",
-    "description": "TransIP API client intergration for Symfony",
+    "description": "TransIP API client integration for Symfony",
     "type": "library",
     "autoload": {
         "psr-4": {
