@@ -6,6 +6,7 @@ namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 
 use Http\Discovery\UriFactoryDiscovery;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
 use Http\Client\Common\Plugin;
@@ -65,27 +66,27 @@ class GenericHttpClient extends HttpClient
 
     public function post(string $url, array $body = []): void
     {
-        // TODO: Implement post() method.
+        $this->client->getHttpClient()->post($url, [], $body);
     }
 
     public function postAuthentication(string $url, string $signature, array $body): array
     {
-        // TODO: Implement postAuthentication() method.
+        throw new RuntimeException(sprintf('%s not yet implemented.', __METHOD__));
     }
 
     public function put(string $url, array $body): void
     {
-        // TODO: Implement put() method.
+        $this->client->getHttpClient()->put($url, [], $body);
     }
 
     public function patch(string $url, array $body): void
     {
-        // TODO: Implement patch() method.
+        $this->client->getHttpClient()->patch($url, [], $body);
     }
 
     public function delete(string $url, array $body = []): void
     {
-        // TODO: Implement delete() method.
+        $this->client->getHttpClient()->delete($url, [], $body);
     }
 
     /**
