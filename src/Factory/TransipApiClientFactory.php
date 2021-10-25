@@ -18,7 +18,7 @@ class TransipApiClientFactory
     private AdapterInterface $cache;
 
     public function __construct(
-        Builder          $clientBuilder,
+        Builder $clientBuilder,
         AdapterInterface $cache
     ) {
         $this->clientBuilder = $clientBuilder;
