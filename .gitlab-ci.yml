@@ -4,6 +4,7 @@ image: '$DOCKER_IMAGE'
 stages:
   - prepare
   - lint
+  - quality
   - validate
   - deploy
   - release
@@ -23,16 +24,6 @@ cache:warmup:
   script:
     - composer install --prefer-dist --no-progress --no-interaction
 
-quality:standards:
-  stage: quality
-  script:
-    - ./vendor/bin/phpcs
-
-quality:analysis:
-  stage: quality
-  script:
-    - ./vendor/bin/phpstan --memory-limit=512M analyse
-
 lint:composer:
   stage: lint
   script:
@@ -47,6 +38,16 @@ lint:secretsscan:
     - ci/scan_secrets.sh
   tags:
     - k8s-tbk
+
+quality:standards:
+  stage: quality
+  script:
+    - ./vendor/bin/phpcs
+
+quality:analysis:
+  stage: quality
+  script:
+    - ./vendor/bin/phpstan --memory-limit=512M analyse
 
 validate:tag-message:
   stage: validate
