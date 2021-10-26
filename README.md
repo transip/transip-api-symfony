@@ -49,11 +49,11 @@ return [
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-
+use Transip\Api\Library\TransipAPI;
 class TransIPApiController
 {
     public function getVpses(
-        \Transip\Api\Library\TransipAPI $apiClient
+        TransipAPI $apiClient
     ): Response
     {
        // Authenticate client with Token
