@@ -2,6 +2,7 @@ variables:
   DOCKER_IMAGE: '$IMAGE_URL'
 image: '$DOCKER_IMAGE'
 stages:
+  - lint
   - validate
   - deploy
   - release
