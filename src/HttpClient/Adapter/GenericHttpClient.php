@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 
+use Exception;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 use Http\Discovery\UriFactoryDiscovery;
 use Psr\Http\Message\ResponseInterface;
 use Transip\Api\Library\Exception\ApiException;
+use Transip\Api\Library\Exception\HttpBadResponseException;
+use Transip\Api\Library\Exception\HttpClientException;
+use Transip\Api\Library\Exception\HttpRequestException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
 use Http\Client\Common\Plugin;
@@ -73,10 +79,12 @@ class GenericHttpClient extends HttpClient
 
     /**
      * @throws \Http\Client\Exception
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function postAuthentication(string $url, string $signature, array $body): array
     {
+        $response = null;
+
         try {
             $response = $this->client->getHttpClient()->post(
                 $url,
@@ -85,28 +93,28 @@ class GenericHttpClient extends HttpClient
             );
         } catch (Exception $exception) {
             $this->handleException($exception);
+        } finally {
+            if ($response->getStatusCode() !== 201) {
+                throw ApiException::unexpectedStatusCode($response);
+            }
+
+            if ($response->getBody() === null) {
+                throw ApiException::emptyResponse($response);
+            }
+
+            $responseBody = json_decode(
+                (string)$response->getBody(),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+
+            if ($responseBody === null) {
+                throw ApiException::malformedJsonResponse($response);
+            }
+
+            return $responseBody;
         }
-
-        if ($response->getStatusCode() !== 201) {
-            throw ApiException::unexpectedStatusCode($response);
-        }
-
-        if ($response->getBody() == null) {
-            throw ApiException::emptyResponse($response);
-        }
-
-        $responseBody = json_decode(
-            (string)$response->getBody(),
-            true,
-            512,
-            JSON_THROW_ON_ERROR
-        );
-
-        if ($responseBody === null) {
-            throw ApiException::malformedJsonResponse($response);
-        }
-
-        return $responseBody;
     }
 
     public function put(string $url, array $body): void
@@ -153,5 +161,22 @@ class GenericHttpClient extends HttpClient
     private function createBody(array $data): string
     {
         return json_encode($data, JSON_THROW_ON_ERROR);
+    }
+
+    private function handleException(Exception $exception): void
+    {
+        if ($exception instanceof BadResponseException) {
+            if ($exception->hasResponse()) {
+                throw HttpBadResponseException::badResponseException($exception, $exception->getResponse());
+            }
+            // Guzzle misclassified curl exception as a client exception (so there is no response)
+            throw HttpClientException::genericRequestException($exception);
+        }
+
+        if ($exception instanceof RequestException) {
+            throw HttpRequestException::requestException($exception);
+        }
+
+        throw HttpClientException::genericRequestException($exception);
     }
 }
