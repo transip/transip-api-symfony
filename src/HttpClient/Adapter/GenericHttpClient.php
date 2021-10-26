@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 
+use Exception;
 use Http\Discovery\UriFactoryDiscovery;
+use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use Transip\Api\Library\Exception\ApiException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
 use Http\Client\Common\Plugin;
@@ -69,9 +72,42 @@ class GenericHttpClient extends HttpClient
         $this->client->getHttpClient()->post($url, [], $this->createBody($body));
     }
 
+    /**
+     * @throws \Http\Client\Exception
+     * @throws JsonException
+     */
     public function postAuthentication(string $url, string $signature, array $body): array
     {
-        throw new RuntimeException(sprintf('%s not yet implemented.', __METHOD__));
+        try {
+            $response = $this->client->getHttpClient()->post(
+                $url,
+                ['Signature' => $signature],
+                json_encode($body, JSON_THROW_ON_ERROR)
+            );
+        } catch (Exception $exception) {
+            $this->handleException($exception);
+        }
+
+        if ($response->getStatusCode() !== 201) {
+            throw ApiException::unexpectedStatusCode($response);
+        }
+
+        if ($response->getBody() == null) {
+            throw ApiException::emptyResponse($response);
+        }
+
+        $responseBody = json_decode(
+            (string)$response->getBody(),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+
+        if ($responseBody === null) {
+            throw ApiException::malformedJsonResponse($response);
+        }
+
+        return $responseBody;
     }
 
     public function put(string $url, array $body): void
@@ -113,7 +149,7 @@ class GenericHttpClient extends HttpClient
     /**
      * @param array $data
      * @return string
-     * @throws \JsonException
+     * @throws JsonException
      */
     private function createBody(array $data): string
     {
