@@ -1,0 +1,14 @@
+parameters: {}
+
+services:
+  # Intitiate Client Builder
+  Transip\Bundle\RestApi\HttpClient\Builder:
+    autowire: true
+
+  # Initiate Factory
+  Transip\Bundle\RestApi\Factory\TransipApiClientFactory:
+    autowire: true
+
+  # Register TransIP API class
+  Transip\Api\Library\TransipAPI:
+    factory: ['@Transip\Bundle\RestApi\Factory\TransipApiClientFactory', 'createApiClient']
