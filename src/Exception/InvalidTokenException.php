@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Transip\Bundle\RestApi\Exception;
 
-use Throwable;
+use Psr\Http\Message\ResponseInterface;
+use Transip\Api\Library\Exception\ApiException;
 
 class InvalidTokenException extends ApiException
 {
-    public function __construct()
+    public function __construct(ResponseInterface $response, int $code = 0)
     {
-        parent::__construct('Access token is invalid.');
+        parent::__construct('Access token is invalid.', $code, $response);
     }
 }

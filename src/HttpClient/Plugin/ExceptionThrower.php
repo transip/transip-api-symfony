@@ -31,7 +31,7 @@ class ExceptionThrower implements Plugin
                 $error = (string)$response->getBody();
             }
 
-            throw ExceptionFactory::createFromMessage($error);
+            throw ExceptionFactory::createFromMessage($error, $response);
         });
     }
 }
