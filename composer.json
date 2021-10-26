@@ -2,6 +2,7 @@
     "name": "transip/transip-api-symfony",
     "description": "TransIP API client integration for Symfony",
     "type": "library",
+    "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
             "Transip\\Bundle\\RestApi\\": "src"
