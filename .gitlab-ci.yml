@@ -2,10 +2,36 @@ variables:
   DOCKER_IMAGE: '$IMAGE_URL'
 image: '$DOCKER_IMAGE'
 stages:
+  - prepare
   - lint
   - validate
   - deploy
   - release
+
+cache: &global_cache
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+  policy: pull
+
+cache:warmup:
+  stage: prepare
+  cache:
+    <<: *global_cache
+    policy: pull-push
+  before_script: []
+  script:
+    - composer install --prefer-dist --no-progress --no-interaction
+
+quality:standards:
+  stage: quality
+  script:
+    - ./vendor/bin/phpcs
+
+quality:analysis:
+  stage: quality
+  script:
+    - ./vendor/bin/phpstan --memory-limit=512M analyse
 
 lint:composer:
   stage: lint

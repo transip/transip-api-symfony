@@ -26,6 +26,8 @@
         "php-http/client-common": "^1.6 || ^2.0"
     },
     "require-dev": {
-        "symfony/http-client": "^4.4 || ^5.3"
+        "symfony/http-client": "^4.4 || ^5.3",
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpstan/phpstan": "^0.12.99"
     }
 }
