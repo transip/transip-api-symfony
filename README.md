@@ -50,9 +50,9 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class LuckyController
+class TransIPApiController
 {
-    public function number(
+    public function getVpses(
         \Transip\Api\Library\TransipAPI $apiClient
     ): Response
     {
