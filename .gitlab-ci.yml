@@ -25,6 +25,7 @@ cache:warmup:
     - composer install --prefer-dist --no-progress --no-interaction
 
 lint:composer:
+  needs: []
   stage: lint
   script:
     - composer validate --no-interaction --strict
@@ -32,6 +33,7 @@ lint:composer:
     - k8s-tbk
 
 lint:secretsscan:
+  needs: []
   image: '$IMAGE_URL_PYTHON'
   stage: lint
   script:
@@ -40,11 +42,13 @@ lint:secretsscan:
     - k8s-tbk
 
 quality:standards:
+  needs: ['cache:warmup']
   stage: quality
   script:
     - ./vendor/bin/phpcs
 
 quality:analysis:
+  needs: ['cache:warmup']
   stage: quality
   script:
     - ./vendor/bin/phpstan --memory-limit=512M analyse
