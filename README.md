@@ -80,4 +80,5 @@ class TransIPApiController
 }
 ```
 
+## Use client
 For more information about using the TransIP API Client, please look [at its documentation](https://github.com/transip/transip-api-php#get-all-domains)
