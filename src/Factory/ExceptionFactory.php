@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Transip\Bundle\RestApi\Factory;
 
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Transip\Api\Library\TransipAPI;
+use Transip\Bundle\RestApi\Exception\ApiTemporarilyUnavailableException;
 use Transip\Bundle\RestApi\Exception\InvalidTokenException;
-use Transip\Bundle\RestApi\HttpClient\Builder;
-use Transip\Bundle\RestApi\HttpClient\Adapter\GenericHttpClient;
 
 /**
  * @internal
@@ -17,7 +14,8 @@ use Transip\Bundle\RestApi\HttpClient\Adapter\GenericHttpClient;
 class ExceptionFactory
 {
     private static $errorMessages = [
-        'Your access token is invalid.' => InvalidTokenException::class
+        'Your access token is invalid.' => InvalidTokenException::class,
+        'Internal error occurred, please contact our support' => ApiTemporarilyUnavailableException::class,
     ];
 
     public static function createFromMessage(string $message, ResponseInterface $response)
