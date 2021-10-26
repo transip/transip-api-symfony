@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 
-use Exception;
 use Http\Discovery\UriFactoryDiscovery;
-use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Transip\Api\Library\Exception\ApiException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
 use Http\Client\Common\Plugin;
 use Transip\Bundle\RestApi\HttpClient\Builder;
+use Transip\Bundle\RestApi\HttpClient\Plugin\ExceptionThrower;
 use Transip\Bundle\RestApi\HttpClient\Plugin\TokenAuthenticationPlugin;
 
 /**
@@ -42,6 +40,7 @@ class GenericHttpClient extends HttpClient
         $uri = UriFactoryDiscovery::find()->createUri($this->endpoint);
         $this->client->addPlugin(new Plugin\AddHostPlugin($uri));
         $this->client->addPlugin(new Plugin\AddPathPlugin($uri));
+        $this->client->addPlugin(new ExceptionThrower());
     }
 
     /**
@@ -149,7 +148,7 @@ class GenericHttpClient extends HttpClient
     /**
      * @param array $data
      * @return string
-     * @throws JsonException
+     * @throws \JsonException
      */
     private function createBody(array $data): string
     {
