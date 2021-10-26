@@ -6,7 +6,7 @@ namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 
 use Http\Discovery\UriFactoryDiscovery;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
+use Transip\Api\Library\Exception\ApiException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
 use Http\Client\Common\Plugin;
