@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Transip\Bundle\RestApi\Factory;
 
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Transip\Api\Library\TransipAPI;
 use Transip\Bundle\RestApi\Exception\InvalidTokenException;
@@ -19,12 +20,12 @@ class ExceptionFactory
         'Your access token is invalid.' => InvalidTokenException::class
     ];
 
-    public static function createFromMessage(string $message)
+    public static function createFromMessage(string $message, ResponseInterface $response)
     {
         if (array_key_exists($message, self::$errorMessages)) {
-            return new self::$errorMessages[$message]();
+            return new self::$errorMessages[$message]($response);
         }
 
-        new \RuntimeException($message);
+        return new \RuntimeException($message);
     }
 }
