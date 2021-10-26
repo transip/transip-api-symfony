@@ -15,7 +15,7 @@ class ExceptionThrower implements Plugin
      */
     public function doHandleRequest(?RequestInterface $request, callable $next, callable $first)
     {
-        return $next($request)->then(function ($response) use ($request) {
+        return $next($request)->then(function ($response) {
             if ($response->getStatusCode() < 400 || $response->getStatusCode() > 600) {
                 return $response;
             }
