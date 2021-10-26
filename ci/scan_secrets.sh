@@ -16,4 +16,4 @@ fi
 
 echo "# Scanning for stored secrets in repository"
 
-trufflehog --regex --entropy=True $REPOSITORY_PATH && echo "All good"
+trufflehog --regex --entropy=True -x .secretsignore $REPOSITORY_PATH && echo "All good"
