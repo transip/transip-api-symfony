@@ -29,8 +29,6 @@ lint:composer:
   stage: lint
   script:
     - composer validate --no-interaction --strict
-  tags:
-    - k8s-tbk
 
 lint:secretsscan:
   needs: []
@@ -38,8 +36,6 @@ lint:secretsscan:
   stage: lint
   script:
     - ci/scan_secrets.sh
-  tags:
-    - k8s-tbk
 
 quality:standards:
   needs: ['cache:warmup']
