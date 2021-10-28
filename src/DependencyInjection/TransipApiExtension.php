@@ -91,8 +91,7 @@ final class TransipApiExtension extends ConfigurableExtension
                 ->setDefinition('transip.client.http.adapter', (new Definition(GenericHttpClient::class)))
                     ->setArgument(0, new Reference('transip.client.http'))
                     ->setArgument(1, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
-                    ->setPublic(false)
-            );
+                    ->setPublic(false));
     }
 
     private function setUpClientBuilder(ContainerBuilder $container, array $plugins): void
