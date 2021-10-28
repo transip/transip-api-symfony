@@ -15,7 +15,7 @@ The TransIP RestAPI bundle for Symfony requires the following in order to work p
 * [json](https://www.php.net/manual/en/book.json.php) (php extension)
 * [openssl](https://www.php.net/manual/en/book.openssl.php) (php extension)
 
-## Composer
+## Installation
 You can install the RestAPI library using [Composer](http://getcomposer.org/). Run the following command:
 ```bash
 composer require transip/transip-api-symfony
@@ -42,6 +42,17 @@ return [
 
 ```
 
+Lastly create a config file:
+```yaml
+# config/packages/transip.yaml
+transip_api:
+  options:
+    generateWhitelistOnlyTokens: true
+    authentication:
+      username: 'your-username' # The username you use to login onto the Control Panel
+      privateKey: '-----BEGIN PRIVATE KEY-----xxxxx/private-key-here/xxxxx-----END PRIVATE KEY-----' # Your Private Key create from the Control Panel
+````
+
 ## Getting started
 ```php
 <?php
@@ -56,13 +67,16 @@ class TransIPApiController
         TransipAPI $apiClient
     ): Response
     {
-       // Authenticate client with Token
+       // Get all VPSes for account #0 (authentication in config)
+       $apiClient->vps()->getAll();
+       
+       // Authenticate client with Token (account #1)
        $apiClient->setToken('some.jwt.token');
        
        // Get all VPSes for account #1
        $apiClient->vps()->getAll();
        
-       // Request Token with username and private key
+       // Request Token with username and private key (account #2)
        $token = $apiClient->auth()->createToken(
             $transipUsername,
             $transipPrivateKey,
