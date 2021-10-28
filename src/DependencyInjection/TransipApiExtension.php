@@ -35,7 +35,7 @@ final class TransipApiExtension extends ConfigurableExtension
 
     private function registerConfiguration(ContainerBuilder $container, array $config): void
     {
-        $options = $config['options'];
+        $options = $config['options'] ?? [];
 
         if (isset($options['http_plugins'])) {
             $options['http_plugins'] = $this->configureHttpPlugins($options['http_plugins'], $config);
@@ -60,7 +60,7 @@ final class TransipApiExtension extends ConfigurableExtension
                 ->setArgument(1, new Reference(RequestFactory::class)))
             ->setPublic(false);
 
-        foreach ($options['http_plugins'] as $plugin) {
+        foreach (($options['http_plugins'] ?? []) as $plugin) {
             $factory->addMethodCall('addPlugin', [$plugin]);
         }
     }
