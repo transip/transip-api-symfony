@@ -1,13 +1,11 @@
 parameters: {}
 
 services:
-  # Intitiate Client Builder
-  Transip\Bundle\RestApi\HttpClient\Builder:
-    autowire: true
-
   # Initiate Factory
   Transip\Bundle\RestApi\Factory\TransipApiClientFactory:
-    autowire: true
+    arguments:
+      $clientBuilder: '@transip.client.http'
+      $cache: '@Symfony\Component\Cache\Adapter\AdapterInterface'
 
   # Register TransIP API class
   Transip\Api\Library\TransipAPI:
