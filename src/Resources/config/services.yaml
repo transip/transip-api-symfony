@@ -9,4 +9,4 @@ services:
 
   # Register TransIP API class
   Transip\Api\Library\TransipAPI:
-    factory: ['@Transip\Bundle\RestApi\Factory\TransipApiClientFactory', 'createApiClient']
+    alias: 'transip.client'
