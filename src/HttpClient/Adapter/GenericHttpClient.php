@@ -93,6 +93,10 @@ class GenericHttpClient extends HttpClient
             $this->handleException($exception);
         }
 
+        if (!isset($response)) {
+            throw new \LogicException('Variable $response is not defined.');
+        }
+
         if ($response->getStatusCode() !== 201) {
             throw ApiException::unexpectedStatusCode($response);
         }
