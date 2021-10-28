@@ -1,12 +1,6 @@
 parameters: {}
 
 services:
-  # Initiate Factory
-  Transip\Bundle\RestApi\Factory\TransipApiClientFactory:
-    arguments:
-      $clientBuilder: '@transip.client.http'
-      $cache: '@Symfony\Component\Cache\Adapter\AdapterInterface'
-
   # Register TransIP API class
   Transip\Api\Library\TransipAPI:
     alias: 'transip.client'

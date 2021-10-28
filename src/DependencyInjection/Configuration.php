@@ -40,6 +40,9 @@ class Configuration implements ConfigurationInterface
                                 ->end() // privateKey
                             ->end()
                         ->end() // authentication
+                        ->booleanNode('generateWhitelistOnlyTokens')
+                            ->info('Create tokens that are IP whitelisted.')
+                        ->end()
                     ->end()
                 ->end() // options
             ->end()

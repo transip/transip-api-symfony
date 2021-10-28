@@ -9,6 +9,7 @@ use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 use Jean85\PrettyVersions;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -17,6 +18,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Transip\Api\Library\TransipAPI;
+use Transip\Bundle\RestApi\HttpClient\Adapter\GenericHttpClient;
 use Transip\Bundle\RestApi\HttpClient\Builder;
 
 /**
@@ -69,13 +71,28 @@ final class TransipApiExtension extends ConfigurableExtension
         if ($authentication) {
             $client->setArgument(0, $authentication['username'] ?? null)
                 ->setArgument(1, $authentication['privateKey'] ?? null)
-                ->setArgument(2, $options['generateWhitelistOnlyTokens'] ?? true);
+                ->setArgument(2, $options['generateWhitelistOnlyTokens'] ?? true)
+                ->setArgument(3, '');
         } elseif ($token) {
             $client->setArgument(0, '')
                 ->setArgument(1, '')
                 ->setArgument(2, $options['generateWhitelistOnlyTokens'] ?? true)
                 ->setArgument(3, $token);
+        } else {
+            $client->setArgument(0, '')
+                ->setArgument(1, '')
+                ->setArgument(2, $options['generateWhitelistOnlyTokens'] ?? true)
+                ->setArgument(3, '');
         }
+
+        $client->setArgument(4, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
+            ->setArgument(5, new Reference(AdapterInterface::class))
+            ->setArgument(6, $container
+                ->setDefinition('transip.client.http.adapter', (new Definition(GenericHttpClient::class)))
+                    ->setArgument(0, new Reference('transip.client.http'))
+                    ->setArgument(1, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
+                    ->setPublic(false)
+            );
     }
 
     private function setUpClientBuilder(ContainerBuilder $container, array $plugins): void
