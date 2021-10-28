@@ -18,14 +18,30 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-            ->arrayNode('options')
-                ->children()
-                    ->arrayNode('http_plugins')
-                        /* Add cast for simple array list */
-                        ->scalarPrototype()->end()
-                    ->end() // http_plugins
+                ->scalarNode('endpoint')
+                    ->info('If this value is not provided, the API client will use the default endpoint.')
                 ->end()
-            ->end() // options
+                ->scalarNode('token')
+                    ->info('Use this to authenticate the API client with a pre-defined access token.')
+                ->end()
+                ->arrayNode('authentication')
+                    ->children()
+                        ->scalarNode('username')
+                            ->info('Your TransIP username.')
+                        ->end() // Username
+                        ->scalarNode('privateKey')
+                            ->info('The private key generated from the Control Panel.')
+                        ->end() // privateKey
+                    ->end()
+                ->end() // authentication
+                ->arrayNode('options')
+                    ->children()
+                        ->arrayNode('http_plugins')
+                            /* Add cast for simple array list */
+                            ->scalarPrototype()->end()
+                        ->end() // http_plugins
+                    ->end()
+                ->end() // options
             ->end()
         ;
 
