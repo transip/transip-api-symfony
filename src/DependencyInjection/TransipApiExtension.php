@@ -41,19 +41,6 @@ final class TransipApiExtension extends ConfigurableExtension
             $options['http_plugins'] = $this->configureHttpPlugins($options['http_plugins'], $config);
         }
 
-        $container
-            ->register('transip.client.options', Options::class)
-            ->setPublic(false)
-            ->setArgument(0, $options);
-
-        $serializer = (new Definition(Serializer::class))
-            ->setPublic(false)
-            ->setArgument(0, new Reference('transip.client.options'));
-
-        $representationSerializerDefinition = (new Definition(RepresentationSerializer::class))
-            ->setPublic(false)
-            ->setArgument(0, new Reference('transip.client.options'));
-
         $factory = $container
             ->setDefinition('transip.client.http', (new Definition(Builder::class))
                 ->setArgument(0, new Reference(HttpClient::class))
