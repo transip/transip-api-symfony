@@ -6,8 +6,8 @@ namespace Transip\Bundle\RestApi\Factory;
 
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Transip\Bundle\RestApi\Exception\ApiTemporarilyUnavailableException;
-use Transip\Bundle\RestApi\Exception\InvalidTokenException;
+use Transip\Bundle\RestApi\Exception\ApiTemporarilyUnavailable;
+use Transip\Bundle\RestApi\Exception\InvalidToken;
 
 use function array_key_exists;
 
@@ -18,8 +18,8 @@ final class ExceptionFactory
 {
     /** @var string[] */
     private static array $errorMessages = [
-        'Your access token is invalid.' => InvalidTokenException::class,
-        'Internal error occurred, please contact our support' => ApiTemporarilyUnavailableException::class,
+        'Your access token is invalid.' => InvalidToken::class,
+        'Internal error occurred, please contact our support' => ApiTemporarilyUnavailable::class,
     ];
 
     public static function createFromMessage(string $message, ResponseInterface $response): RuntimeException
