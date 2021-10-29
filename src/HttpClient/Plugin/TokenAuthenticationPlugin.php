@@ -1,20 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Transip\Bundle\RestApi\HttpClient\Plugin;
 
 use Http\Client\Common\Plugin;
 use Psr\Http\Message\RequestInterface;
 
-class TokenAuthenticationPlugin implements Plugin
+use function sprintf;
+
+final class TokenAuthenticationPlugin implements Plugin
 {
     use Plugin\VersionBridgePlugin;
 
     private string $token;
+
     private string $userAgent;
 
     public function __construct(string $token, string $userAgent = 'transip-api-symfony-bundle')
     {
-        $this->token = $token;
+        $this->token     = $token;
         $this->userAgent = $userAgent;
     }
 
