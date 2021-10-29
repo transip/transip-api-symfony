@@ -16,12 +16,13 @@ use function array_key_exists;
  */
 final class ExceptionFactory
 {
-    private static $errorMessages = [
+    /** @var string[] */
+    private static array $errorMessages = [
         'Your access token is invalid.' => InvalidTokenException::class,
         'Internal error occurred, please contact our support' => ApiTemporarilyUnavailableException::class,
     ];
 
-    public static function createFromMessage(string $message, ResponseInterface $response)
+    public static function createFromMessage(string $message, ResponseInterface $response): RuntimeException
     {
         if (array_key_exists($message, self::$errorMessages)) {
             return new self::$errorMessages[$message]($response);
