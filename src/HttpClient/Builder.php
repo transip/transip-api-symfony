@@ -10,65 +10,49 @@ use Http\Client\Common\PluginClientFactory;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
 
+use function array_merge;
+
 /**
  * @internal
  */
-class Builder
+final class Builder
 {
     /**
      * The object that sends HTTP messages.
-     *
-     * @var HttpClient
      */
-    private $httpClient;
+    private HttpClient $httpClient;
 
     /**
      * A HTTP client with all our plugins.
-     *
-     * @var HttpMethodsClient
      */
-    private $pluginClient;
+    private HttpMethodsClient $pluginClient;
 
-    /**
-     * @var RequestFactory
-     */
-    private $requestFactory;
+    private RequestFactory $requestFactory;
 
     /**
      * True if we should create a new Plugin client at next request.
-     *
-     * @var bool
      */
-    private $httpClientModified = true;
+    private bool $httpClientModified = true;
 
-    /**
-     * @var Plugin[]
-     */
-    private $plugins = [];
+    /** @var Plugin[] */
+    private array $plugins = [];
 
     /**
      * Http headers.
      *
      * @var array
      */
-    private $headers = [];
+    private array $headers = [];
 
-    /**
-     * @param HttpClient     $httpClient
-     * @param RequestFactory $requestFactory
-     */
     public function __construct(
         HttpClient $httpClient,
         RequestFactory $requestFactory
     ) {
-        $this->httpClient = $httpClient;
+        $this->httpClient     = $httpClient;
         $this->requestFactory = $requestFactory;
     }
 
-    /**
-     * @return HttpMethodsClient
-     */
-    public function getHttpClient()
+    public function getHttpClient(): HttpMethodsClient
     {
         if ($this->httpClientModified) {
             $this->httpClientModified = false;
@@ -84,34 +68,32 @@ class Builder
 
     /**
      * Add a new plugin to the end of the plugin chain.
-     *
-     * @param Plugin $plugin
      */
-    public function addPlugin(Plugin $plugin)
+    public function addPlugin(Plugin $plugin): void
     {
-        $this->plugins[] = $plugin;
+        $this->plugins[]          = $plugin;
         $this->httpClientModified = true;
     }
 
     /**
      * Remove a plugin by its fully qualified class name (FQCN).
-     *
-     * @param string $fqcn
      */
-    public function removePlugin($fqcn)
+    public function removePlugin(string $fqcn): void
     {
         foreach ($this->plugins as $idx => $plugin) {
-            if ($plugin instanceof $fqcn) {
-                unset($this->plugins[$idx]);
-                $this->httpClientModified = true;
+            if (! ($plugin instanceof $fqcn)) {
+                continue;
             }
+
+            unset($this->plugins[$idx]);
+            $this->httpClientModified = true;
         }
     }
 
     /**
      * Clears used headers.
      */
-    public function clearHeaders()
+    public function clearHeaders(): void
     {
         $this->headers = [];
 
@@ -122,7 +104,7 @@ class Builder
     /**
      * @param array $headers
      */
-    public function addHeaders(array $headers)
+    public function addHeaders(array $headers): void
     {
         $this->headers = array_merge($this->headers, $headers);
 
@@ -130,16 +112,12 @@ class Builder
         $this->addPlugin(new Plugin\HeaderAppendPlugin($this->headers));
     }
 
-    /**
-     * @param string $header
-     * @param string $headerValue
-     */
-    public function addHeaderValue($header, $headerValue)
+    public function addHeaderValue(string $header, string $headerValue): void
     {
-        if (!isset($this->headers[$header])) {
+        if (! isset($this->headers[$header])) {
             $this->headers[$header] = $headerValue;
         } else {
-            $this->headers[$header] = array_merge((array) $this->headers[$header], [$headerValue]);
+            $this->headers[$header] = array_merge((array)$this->headers[$header], [$headerValue]);
         }
 
         $this->removePlugin(Plugin\HeaderAppendPlugin::class);
