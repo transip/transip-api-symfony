@@ -40,7 +40,7 @@ final class Builder
     /**
      * Http headers.
      *
-     * @var array
+     * @var array<string, string>
      */
     private array $headers = [];
 
@@ -102,7 +102,7 @@ final class Builder
     }
 
     /**
-     * @param array $headers
+     * @param array<string, string> $headers
      */
     public function addHeaders(array $headers): void
     {
