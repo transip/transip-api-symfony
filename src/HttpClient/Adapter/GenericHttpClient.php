@@ -4,33 +4,42 @@ declare(strict_types=1);
 
 namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 
-use Exception;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\RequestException;
+use Http\Client\Common\Plugin;
+use Http\Client\Exception;
 use Http\Discovery\UriFactoryDiscovery;
+use JsonException;
+use LogicException;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 use Transip\Api\Library\Exception\ApiException;
 use Transip\Api\Library\Exception\HttpBadResponseException;
 use Transip\Api\Library\Exception\HttpClientException;
 use Transip\Api\Library\Exception\HttpRequestException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
-use Http\Client\Common\Plugin;
 use Transip\Bundle\RestApi\HttpClient\Builder;
 use Transip\Bundle\RestApi\HttpClient\Plugin\ExceptionThrower;
 use Transip\Bundle\RestApi\HttpClient\Plugin\TokenAuthenticationPlugin;
 
+use function count;
+use function http_build_query;
+use function json_decode;
+use function json_encode;
+use function json_last_error;
+use function strpos;
+
+use const JSON_ERROR_NONE;
+use const JSON_THROW_ON_ERROR;
+
 /**
  * @internal
  */
-class GenericHttpClient extends HttpClient
+final class GenericHttpClient extends HttpClient
 {
     private Builder $client;
 
-    /**
-     * @param Builder $httpClientBuilder
-     * @param string|null $endpoint
-     */
     public function __construct(
         Builder $httpClientBuilder,
         ?string $endpoint = null
@@ -78,8 +87,8 @@ class GenericHttpClient extends HttpClient
     }
 
     /**
-     * @throws \Http\Client\Exception
-     * @throws \JsonException
+     * @throws Exception
+     * @throws JsonException
      */
     public function postAuthentication(string $url, string $signature, array $body): array
     {
@@ -89,12 +98,12 @@ class GenericHttpClient extends HttpClient
                 ['Signature' => $signature],
                 json_encode($body, JSON_THROW_ON_ERROR)
             );
-        } catch (Exception $exception) {
+        } catch (Throwable $exception) {
             $this->handleException($exception);
         }
 
-        if (!isset($response)) {
-            throw new \LogicException('Variable $response is not defined.');
+        if (! isset($response)) {
+            throw new LogicException('Variable $response is not defined.');
         }
 
         if ($response->getStatusCode() !== 201) {
@@ -138,8 +147,6 @@ class GenericHttpClient extends HttpClient
      * Tries to decode JSON object returned from server. If response is not of type `application/json` or the JSON can
      * not be decoded, the original data will be returned
      *
-     * @param ResponseInterface $response
-     *
      * @return array|string
      */
     private function getContent(ResponseInterface $response)
@@ -147,7 +154,7 @@ class GenericHttpClient extends HttpClient
         $body = $response->getBody()->__toString();
         if (strpos($response->getHeaderLine('Content-Type'), 'application/json') === 0) {
             $content = json_decode($body, true);
-            if (JSON_ERROR_NONE === json_last_error()) {
+            if (json_last_error() === JSON_ERROR_NONE) {
                 return $content;
             }
         }
@@ -157,20 +164,21 @@ class GenericHttpClient extends HttpClient
 
     /**
      * @param array $data
-     * @return string
-     * @throws \JsonException
+     *
+     * @throws JsonException
      */
     private function createBody(array $data): string
     {
         return json_encode($data, JSON_THROW_ON_ERROR);
     }
 
-    private function handleException(Exception $exception): void
+    private function handleException(Throwable $exception): void
     {
         if ($exception instanceof BadResponseException) {
             if ($exception->hasResponse()) {
                 throw HttpBadResponseException::badResponseException($exception, $exception->getResponse());
             }
+
             // Guzzle misclassified curl exception as a client exception (so there is no response)
             throw HttpClientException::genericRequestException($exception);
         }
