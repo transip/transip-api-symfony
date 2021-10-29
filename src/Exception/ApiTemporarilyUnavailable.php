@@ -7,7 +7,7 @@ namespace Transip\Bundle\RestApi\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Transip\Api\Library\Exception\ApiException;
 
-final class ApiTemporarilyUnavailableException extends ApiException
+final class ApiTemporarilyUnavailable extends ApiException
 {
     public function __construct(ResponseInterface $response, int $code = 0)
     {
