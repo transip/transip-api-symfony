@@ -4,22 +4,21 @@ declare(strict_types=1);
 
 namespace Transip\Bundle\RestApi\DependencyInjection;
 
-use Exception;
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
-use Jean85\PrettyVersions;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Transip\Api\Library\TransipAPI;
 use Transip\Bundle\RestApi\HttpClient\Adapter\GenericHttpClient;
 use Transip\Bundle\RestApi\HttpClient\Builder;
+
+use function array_map;
 
 /**
  * @internal
@@ -59,7 +58,7 @@ final class TransipApiExtension extends ConfigurableExtension
 
     private function setUpClient(ContainerBuilder $container, array $options): void
     {
-        $token = $options['token'] ?? null;
+        $token          = $options['token'] ?? null;
         $authentication = $options['authentication'] ?? null;
 
         // TODO: Add warning logging here if both $token and $authentication are configured

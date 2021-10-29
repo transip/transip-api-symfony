@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Transip\Bundle\RestApi\Factory;
 
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Transip\Bundle\RestApi\Exception\ApiTemporarilyUnavailableException;
 use Transip\Bundle\RestApi\Exception\InvalidTokenException;
+
+use function array_key_exists;
 
 /**
  * @internal
  */
-class ExceptionFactory
+final class ExceptionFactory
 {
     private static $errorMessages = [
         'Your access token is invalid.' => InvalidTokenException::class,
@@ -24,6 +27,6 @@ class ExceptionFactory
             return new self::$errorMessages[$message]($response);
         }
 
-        return new \RuntimeException($message);
+        return new RuntimeException($message);
     }
 }

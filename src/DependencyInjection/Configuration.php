@@ -10,7 +10,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 /**
  * @internal
  */
-class Configuration implements ConfigurationInterface
+final class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
@@ -45,8 +45,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end() // options
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }

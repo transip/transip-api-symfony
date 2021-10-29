@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Transip\Bundle\RestApi\HttpClient\Plugin;
 
 use Http\Client\Common\Plugin;
 use Psr\Http\Message\RequestInterface;
+use Throwable;
 use Transip\Bundle\RestApi\Factory\ExceptionFactory;
 
-class ExceptionThrower implements Plugin
+use function json_decode;
+
+final class ExceptionThrower implements Plugin
 {
     use Plugin\VersionBridgePlugin;
 
@@ -15,7 +20,7 @@ class ExceptionThrower implements Plugin
      */
     public function doHandleRequest(?RequestInterface $request, callable $next, callable $first)
     {
-        return $next($request)->then(function ($response) {
+        return $next($request)->then(static function ($response) {
             if ($response->getStatusCode() < 400 || $response->getStatusCode() > 600) {
                 return $response;
             }
@@ -27,7 +32,7 @@ class ExceptionThrower implements Plugin
                 } else {
                     $error = (string)$response->getBody();
                 }
-            } catch (\Throwable $t) {
+            } catch (Throwable $t) {
                 $error = (string)$response->getBody();
             }
 
