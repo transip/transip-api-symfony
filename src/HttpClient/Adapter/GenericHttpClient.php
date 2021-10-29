@@ -7,7 +7,6 @@ namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\RequestException;
 use Http\Client\Common\Plugin;
-use Http\Client\Exception;
 use Http\Discovery\UriFactoryDiscovery;
 use JsonException;
 use LogicException;
@@ -70,6 +69,11 @@ final class GenericHttpClient extends HttpClient
         $this->client->addPlugin(new TokenAuthenticationPlugin($token));
     }
 
+    /**
+     * @param array<mixed, mixed> $query
+     *
+     * @return array<mixed, mixed>
+     */
     public function get(string $url, array $query = []): array
     {
         if (count($query) > 0) {
@@ -81,14 +85,18 @@ final class GenericHttpClient extends HttpClient
         );
     }
 
+    /**
+     * @param array<mixed, mixed> $body
+     */
     public function post(string $url, array $body = []): void
     {
         $this->client->getHttpClient()->post($url, [], $this->createBody($body));
     }
 
     /**
-     * @throws Exception
-     * @throws JsonException
+     * @param array<mixed, mixed> $body
+     *
+     * @return array<mixed, mixed>
      */
     public function postAuthentication(string $url, string $signature, array $body): array
     {
@@ -128,16 +136,25 @@ final class GenericHttpClient extends HttpClient
         return $responseBody;
     }
 
+    /**
+     * @param array<mixed, mixed> $body
+     */
     public function put(string $url, array $body): void
     {
         $this->client->getHttpClient()->put($url, [], $this->createBody($body));
     }
 
+    /**
+     * @param array<mixed, mixed> $body
+     */
     public function patch(string $url, array $body): void
     {
         $this->client->getHttpClient()->patch($url, [], $this->createBody($body));
     }
 
+    /**
+     * @param array<mixed, mixed> $body
+     */
     public function delete(string $url, array $body = []): void
     {
         $this->client->getHttpClient()->delete($url, [], $this->createBody($body));
@@ -147,7 +164,7 @@ final class GenericHttpClient extends HttpClient
      * Tries to decode JSON object returned from server. If response is not of type `application/json` or the JSON can
      * not be decoded, the original data will be returned
      *
-     * @return array|string
+     * @return array<mixed, mixed>|string
      */
     private function getContent(ResponseInterface $response)
     {
@@ -163,7 +180,7 @@ final class GenericHttpClient extends HttpClient
     }
 
     /**
-     * @param array $data
+     * @param array<mixed, mixed> $data
      *
      * @throws JsonException
      */
