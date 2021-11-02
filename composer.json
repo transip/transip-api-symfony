@@ -16,7 +16,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "transip/transip-api-php": "^6.9.2",
         "psr/http-client":  "^1.0",
         "nyholm/psr7": "^1.4",
