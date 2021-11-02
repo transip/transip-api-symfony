@@ -49,14 +49,14 @@ transip_api:
   options:
     generateWhitelistOnlyTokens: true
     authentication:
-      username: 'your-username' # The username you use to login onto the Control Panel
-      privateKey: '-----BEGIN PRIVATE KEY-----xxxxx/private-key-here/xxxxx-----END PRIVATE KEY-----' # Your Private Key create from the Control Panel
+      username: '%env(TRANSIP_USERNAME)%' # The username you use to login onto the Control Panel
+      privateKey: '%env(TRANSIP_PRIVATE_KEY)%' # Your Private Key create from the Control Panel
 ````
 
 ## Getting started
 ```php
 <?php
-// src/Controller/LuckyController.php
+// src/Controller/TransIPApiController.php
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
