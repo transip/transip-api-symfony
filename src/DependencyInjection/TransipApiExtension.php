@@ -6,12 +6,11 @@ namespace Transip\Bundle\RestApi\DependencyInjection;
 
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
 use Transip\Api\Library\TransipAPI;
@@ -25,21 +24,14 @@ use function array_map;
  */
 final class TransipApiExtension extends ConfigurableExtension
 {
-    private ?LoggerInterface $logger;
-
-    public function __construct(
-        ?LoggerInterface $logger = null
-    ) {
-        $this->logger = $logger;
-    }
-
     /**
      * @param mixed[] $mergedConfig
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.yaml');
+        $locator = new FileLocator(__DIR__ . '/../Resources/config');
+        $loader  = new PhpFileLoader($container, $locator);
+        $loader->load('services.php');
 
         $this->registerConfiguration($container, $mergedConfig);
     }
@@ -52,7 +44,7 @@ final class TransipApiExtension extends ConfigurableExtension
         $options = $config['options'] ?? [];
 
         if (isset($options['http_plugins'])) {
-            $options['http_plugins'] = $this->configureHttpPlugins($options['http_plugins'], $config);
+            $options['http_plugins'] = $this->configureHttpPlugins($options['http_plugins']);
         }
 
         $this->setUpClientBuilder($container, $options['http_plugins'] ?? []);
@@ -71,7 +63,7 @@ final class TransipApiExtension extends ConfigurableExtension
 
         $client = $container
             ->setDefinition('transip.client', (new Definition(TransipAPI::class)))
-                ->setPublic(false);
+            ->setPublic(false);
 
         if ($authentication) {
             $client->setArgument(0, $authentication['username'] ?? null)
@@ -94,9 +86,9 @@ final class TransipApiExtension extends ConfigurableExtension
             ->setArgument(5, new Reference(AdapterInterface::class))
             ->setArgument(6, $container
                 ->setDefinition('transip.client.http.adapter', (new Definition(GenericHttpClient::class)))
-                    ->setArgument(0, new Reference('transip.client.http'))
-                    ->setArgument(1, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
-                    ->setPublic(false));
+                ->setArgument(0, new Reference('transip.client.http'))
+                ->setArgument(1, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
+                ->setPublic(false));
     }
 
     /**
@@ -116,12 +108,11 @@ final class TransipApiExtension extends ConfigurableExtension
     }
 
     /**
-     * @param string[]             $integrations
-     * @param array<string, mixed> $config
+     * @param string[] $integrations
      *
      * @return array<Reference|Definition>
      */
-    private function configureHttpPlugins(array $integrations, array $config): array
+    private function configureHttpPlugins(array $integrations): array
     {
         return array_map(static function (string $value): Reference {
             return new Reference($value);
