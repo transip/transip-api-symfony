@@ -4,8 +4,7 @@
 
 # TransIP RestAPI bundle for Symfony
 
-This bundle provides an instance of `\Transip\Api\Library\TransipAPI` to Symfony's Container. This bundle is currently 
-still in development.
+This bundle provides an instance of `\Transip\Api\Library\TransipAPI` to Symfony's Container. 
 
 ## Requirements
 
