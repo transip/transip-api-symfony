@@ -166,7 +166,7 @@ final class GenericHttpClient extends HttpClient
      *
      * @return array<mixed, mixed>|string
      */
-    private function getContent(ResponseInterface $response)
+    private function getContent(ResponseInterface $response): array|string
     {
         $body = $response->getBody()->__toString();
         if (strpos($response->getHeaderLine('Content-Type'), 'application/json') === 0) {

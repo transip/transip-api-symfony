@@ -1,6 +1,0 @@
-parameters: {}
-
-services:
-  # Register TransIP API class
-  Transip\Api\Library\TransipAPI:
-    alias: 'transip.client'
