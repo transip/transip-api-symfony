@@ -11,7 +11,7 @@ still in development.
 
 The TransIP RestAPI bundle for Symfony requires the following in order to work properly:
 
-* PHP >=7.4.
+* PHP >= 8.0
 * [json](https://www.php.net/manual/en/book.json.php) (php extension)
 * [openssl](https://www.php.net/manual/en/book.openssl.php) (php extension)
 
