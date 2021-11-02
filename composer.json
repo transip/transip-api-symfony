@@ -20,11 +20,13 @@
         "transip/transip-api-php": "^6.9.2",
         "psr/http-client":  "^1.0",
         "nyholm/psr7": "^1.4",
-        "symfony/framework-bundle": "^4.4 ||^5.3",
         "php-http/httplug": "^1.1 || ^2.0",
         "php-http/discovery": "^1.0",
         "php-http/client-implementation": "^1.0",
-        "php-http/client-common": "^1.6 || ^2.0"
+        "php-http/client-common": "^1.6 || ^2.0",
+        "symfony/http-kernel": "^5.3",
+        "symfony/dependency-injection": "^5.3",
+        "symfony/config": "^5.3"
     },
     "require-dev": {
         "symfony/http-client": "^4.4 || ^5.3",
