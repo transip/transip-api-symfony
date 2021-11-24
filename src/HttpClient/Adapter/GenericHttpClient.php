@@ -51,10 +51,20 @@ final class GenericHttpClient extends HttpClient
 
     private function setupHttpBuilder(): void
     {
-        $uri = UriFactoryDiscovery::find()->createUri($this->endpoint);
-        $this->client->addPlugin(new Plugin\AddHostPlugin($uri));
-        $this->client->addPlugin(new Plugin\AddPathPlugin($uri));
+        $this->setEndpoint($this->endpoint);
         $this->client->addPlugin(new ExceptionThrower());
+    }
+
+    public function setEndpoint(string $endpoint): void
+    {
+        // Construct URI
+        $uri = UriFactoryDiscovery::find()->createUri($endpoint);
+
+        // Remove BaseUriPlugin
+        $this->client->removePlugin(Plugin\BaseUriPlugin::class);
+
+        // Add new BaseUriPlugin
+        $this->client->addPlugin(new Plugin\BaseUriPlugin($uri));
     }
 
     /**
