@@ -64,8 +64,7 @@ class TransIPApiController
 {
     public function getVpses(
         TransipAPI $apiClient
-    ): Response
-    {
+    ): Response {
        // Get all VPSes for account #0 (authentication in config)
        $apiClient->vps()->getAll();
        
