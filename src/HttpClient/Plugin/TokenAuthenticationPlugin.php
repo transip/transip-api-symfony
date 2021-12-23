@@ -13,14 +13,8 @@ final class TokenAuthenticationPlugin implements Plugin
 {
     use Plugin\VersionBridgePlugin;
 
-    private string $token;
-
-    private string $userAgent;
-
-    public function __construct(string $token, string $userAgent = 'transip-api-symfony-bundle')
+    public function __construct(private string $token, private string $userAgent = 'transip-api-symfony-bundle')
     {
-        $this->token     = $token;
-        $this->userAgent = $userAgent;
     }
 
     /**

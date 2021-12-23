@@ -32,7 +32,7 @@ final class ExceptionThrower implements Plugin
                 } else {
                     $error = (string)$response->getBody();
                 }
-            } catch (Throwable $t) {
+            } catch (Throwable) {
                 $error = (string)$response->getBody();
             }
 
