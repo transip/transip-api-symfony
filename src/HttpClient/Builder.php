@@ -27,8 +27,6 @@ final class Builder
      */
     private HttpMethodsClient $pluginClient;
 
-    private RequestFactory $requestFactory;
-
     /**
      * True if we should create a new Plugin client at next request.
      */
@@ -46,10 +44,9 @@ final class Builder
 
     public function __construct(
         HttpClient $httpClient,
-        RequestFactory $requestFactory
+        private RequestFactory $requestFactory
     ) {
-        $this->httpClient     = $httpClient;
-        $this->requestFactory = $requestFactory;
+        $this->httpClient = $httpClient;
     }
 
     public function getHttpClient(): HttpMethodsClient
