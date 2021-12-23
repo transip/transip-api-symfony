@@ -6,7 +6,6 @@ namespace Transip\Bundle\RestApi\DependencyInjection;
 
 use Http\Client\HttpClient;
 use Http\Message\RequestFactory;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -83,7 +82,7 @@ final class TransipApiExtension extends ConfigurableExtension
         }
 
         $client->setArgument(4, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
-            ->setArgument(5, new Reference(AdapterInterface::class))
+            ->setArgument(5, new Reference('cache.system'))
             ->setArgument(6, $container
                 ->setDefinition('transip.client.http.adapter', (new Definition(GenericHttpClient::class)))
                 ->setArgument(0, new Reference('transip.client.http'))
