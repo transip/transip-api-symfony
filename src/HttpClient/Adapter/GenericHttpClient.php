@@ -19,7 +19,6 @@ use Transip\Api\Library\Exception\HttpRequestException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
 use Transip\Bundle\RestApi\HttpClient\Builder;
-use Transip\Bundle\RestApi\HttpClient\Plugin\ExceptionThrower;
 use Transip\Bundle\RestApi\HttpClient\Plugin\TokenAuthenticationPlugin;
 
 use function count;
@@ -52,7 +51,6 @@ final class GenericHttpClient extends HttpClient
     private function setupHttpBuilder(): void
     {
         $this->setEndpoint($this->endpoint);
-        $this->client->addPlugin(new ExceptionThrower());
     }
 
     public function setEndpoint(string $endpoint): void

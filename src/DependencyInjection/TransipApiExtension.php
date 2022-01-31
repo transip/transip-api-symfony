@@ -62,6 +62,7 @@ final class TransipApiExtension extends ConfigurableExtension
 
         $client = $container
             ->setDefinition('transip.client', (new Definition(TransipAPI::class)))
+            ->setLazy(true)
             ->setPublic(false);
 
         if ($authentication) {
