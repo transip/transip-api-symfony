@@ -7,7 +7,7 @@ namespace Transip\Bundle\RestApi\HttpClient\Adapter;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\RequestException;
 use Http\Client\Common\Plugin;
-use Http\Discovery\UriFactoryDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use JsonException;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
@@ -18,7 +18,7 @@ use Transip\Api\Library\Exception\HttpClientException;
 use Transip\Api\Library\Exception\HttpRequestException;
 use Transip\Api\Library\HttpClient\HttpClient;
 use Transip\Api\Library\TransipAPI;
-use Transip\Bundle\RestApi\HttpClient\Builder;
+use Transip\Bundle\RestApi\HttpClient\BuilderInterface;
 use Transip\Bundle\RestApi\HttpClient\Plugin\TokenAuthenticationPlugin;
 
 use function count;
@@ -36,10 +36,10 @@ use const JSON_THROW_ON_ERROR;
  */
 final class GenericHttpClient extends HttpClient
 {
-    private Builder $client;
+    private BuilderInterface $client;
 
     public function __construct(
-        Builder $httpClientBuilder,
+        BuilderInterface $httpClientBuilder,
         ?string $endpoint = null
     ) {
         parent::__construct($endpoint ?? TransipAPI::TRANSIP_API_ENDPOINT);
@@ -56,7 +56,7 @@ final class GenericHttpClient extends HttpClient
     public function setEndpoint(string $endpoint): void
     {
         // Construct URI
-        $uri = UriFactoryDiscovery::find()->createUri($endpoint);
+        $uri = Psr17FactoryDiscovery::findUriFactory()->createUri($endpoint);
 
         // Remove BaseUriPlugin
         $this->client->removePlugin(Plugin\BaseUriPlugin::class);
