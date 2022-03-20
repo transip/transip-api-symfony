@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Transip\Bundle\RestApi\DependencyInjection;
 
 use Http\Client\HttpClient;
-use Http\Message\RequestFactory;
+use Psr\Http\Message\RequestFactoryInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -99,7 +99,7 @@ final class TransipApiExtension extends ConfigurableExtension
         $clientBuilder = $container
             ->setDefinition('transip.client.http', (new Definition(Builder::class))
                 ->setArgument(0, new Reference(HttpClient::class))
-                ->setArgument(1, new Reference(RequestFactory::class)))
+                ->setArgument(1, new Reference(RequestFactoryInterface::class)))
             ->setPublic(false);
 
         foreach ($plugins as $plugin) {
