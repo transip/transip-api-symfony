@@ -56,7 +56,7 @@ transip_api:
 ```php
 <?php
 // src/Controller/TransIPApiController.php
-namespace App\Controller;
+namespace Ods\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Transip\Api\Library\TransipAPI;
