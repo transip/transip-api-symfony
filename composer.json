@@ -8,6 +8,11 @@
             "Transip\\Bundle\\RestApi\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Transip\\Bundle\\RestApi\\Tests\\": "Tests"
+        }
+    },
     "minimum-stability": "stable",
     "require": {
         "php": "^8.0",
