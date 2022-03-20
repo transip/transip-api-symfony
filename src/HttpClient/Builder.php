@@ -8,19 +8,24 @@ use Http\Client\Common\HttpMethodsClient;
 use Http\Client\Common\Plugin;
 use Http\Client\Common\PluginClientFactory;
 use Http\Client\HttpClient;
-use Http\Message\RequestFactory;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 use function array_merge;
 
 /**
  * @internal
  */
-final class Builder
+final class Builder implements BuilderInterface
 {
     /**
      * The object that sends HTTP messages.
      */
-    private HttpClient $httpClient;
+    private ClientInterface $httpClient;
+
+    private RequestFactoryInterface $requestFactory;
 
     /**
      * A HTTP client with all our plugins.
@@ -43,10 +48,11 @@ final class Builder
     private array $headers = [];
 
     public function __construct(
-        HttpClient $httpClient,
-        private RequestFactory $requestFactory
+        ?HttpClient $httpClient = null,
+        ?RequestFactoryInterface $requestFactory = null,
     ) {
-        $this->httpClient = $httpClient;
+        $this->httpClient     = $httpClient ?? Psr18ClientDiscovery::find();
+        $this->requestFactory = $requestFactory ?? Psr17FactoryDiscovery::findRequestFactory();
     }
 
     public function getHttpClient(): HttpMethodsClient

@@ -4,6 +4,7 @@ image: '$DOCKER_IMAGE'
 stages:
   - prepare
   - lint
+  - test
   - quality
   - validate
   - deploy
@@ -36,6 +37,27 @@ lint:secretsscan:
   stage: lint
   script:
     - ci/scan_secrets.sh
+
+phpunit:
+  stage: test
+  needs: ['cache:warmup']
+  variables:
+    PHP_XDEBUG: "1"
+    XDEBUG_MODE: coverage
+  before_script:
+    - /usr/local/bin/entrypoint.sh
+    - composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
+  script:
+    - ./vendor/bin/phpunit --coverage-text --testdox --colors=never -vvvvvv
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  artifacts:
+    when: always
+    paths:
+      - build
+    expire_in: 1 day
+    reports:
+      junit: build/logs/junit.xml
+      cobertura: build/cobertura.xml
 
 quality:standards:
   needs: ['cache:warmup']
