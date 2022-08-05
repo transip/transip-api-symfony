@@ -103,6 +103,14 @@ final class GenericHttpClient extends HttpClient
 
     /**
      * @param array<mixed, mixed> $body
+     */
+    public function postWithResponse(string $url, array $body = []): array
+    {
+        return $this->getContent($this->client->getHttpClient()->post($url, [], $this->createBody($body)));
+    }
+
+    /**
+     * @param array<mixed, mixed> $body
      *
      * @return array<mixed, mixed>
      */
