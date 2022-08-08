@@ -12,9 +12,9 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
+use Transip\Api\Library\HttpClient\Builder\ClientBuilder;
+use Transip\Api\Library\HttpClient\HttpMethodsClient;
 use Transip\Api\Library\TransipAPI;
-use Transip\Bundle\RestApi\HttpClient\Adapter\GenericHttpClient;
-use Transip\Bundle\RestApi\HttpClient\Builder;
 
 use function array_map;
 
@@ -85,7 +85,7 @@ final class TransipApiExtension extends ConfigurableExtension
         $client->setArgument(4, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
             ->setArgument(5, new Reference('cache.system'))
             ->setArgument(6, $container
-                ->setDefinition('transip.client.http.adapter', (new Definition(GenericHttpClient::class)))
+                ->setDefinition('transip.client.http.adapter', (new Definition(HttpMethodsClient::class)))
                 ->setArgument(0, new Reference('transip.client.http'))
                 ->setArgument(1, $options['endpoint'] ?? TransipAPI::TRANSIP_API_ENDPOINT)
                 ->setPublic(false));
@@ -97,7 +97,7 @@ final class TransipApiExtension extends ConfigurableExtension
     private function setUpClientBuilder(ContainerBuilder $container, array $plugins): void
     {
         $clientBuilder = $container
-            ->setDefinition('transip.client.http', (new Definition(Builder::class))
+            ->setDefinition('transip.client.http', (new Definition(ClientBuilder::class))
                 ->setArgument(0, new Reference(HttpClient::class))
                 ->setArgument(1, new Reference(RequestFactoryInterface::class)))
             ->setPublic(false);
@@ -114,8 +114,6 @@ final class TransipApiExtension extends ConfigurableExtension
      */
     private function configureHttpPlugins(array $integrations): array
     {
-        return array_map(static function (string $value): Reference {
-            return new Reference($value);
-        }, $integrations);
+        return array_map(static fn (string $value): Reference => new Reference($value), $integrations);
     }
 }
