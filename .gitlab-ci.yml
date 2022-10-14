@@ -57,7 +57,9 @@ phpunit:
     expire_in: 1 day
     reports:
       junit: build/logs/junit.xml
-      cobertura: build/cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/cobertura.xml
 
 quality:standards:
   needs: ['cache:warmup']
