@@ -18,14 +18,10 @@ use Transip\Api\Library\TransipAPI;
 
 use function array_map;
 
-/**
- * @internal
- */
+/** @internal */
 final class TransipApiExtension extends ConfigurableExtension
 {
-    /**
-     * @param mixed[] $mergedConfig
-     */
+    /** @param mixed[] $mergedConfig */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
         $locator = new FileLocator(__DIR__ . '/../Resources/config');
@@ -35,9 +31,7 @@ final class TransipApiExtension extends ConfigurableExtension
         $this->registerConfiguration($container, $mergedConfig);
     }
 
-    /**
-     * @param array<string, mixed> $config
-     */
+    /** @param array<string, mixed> $config */
     private function registerConfiguration(ContainerBuilder $container, array $config): void
     {
         $options = $config['options'] ?? [];
@@ -50,9 +44,7 @@ final class TransipApiExtension extends ConfigurableExtension
         $this->setUpClient($container, $options);
     }
 
-    /**
-     * @param array<string, mixed> $options
-     */
+    /** @param array<string, mixed> $options */
     private function setUpClient(ContainerBuilder $container, array $options): void
     {
         $token          = $options['token'] ?? null;
@@ -91,9 +83,7 @@ final class TransipApiExtension extends ConfigurableExtension
                 ->setPublic(false));
     }
 
-    /**
-     * @param Reference[] $plugins
-     */
+    /** @param Reference[] $plugins */
     private function setUpClientBuilder(ContainerBuilder $container, array $plugins): void
     {
         $clientBuilder = $container
